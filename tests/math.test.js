@@ -1,4 +1,4 @@
-const { calculateTip, fahrenheitToCelsius, celsiusToFahrenheit } = require('../src/math')
+const { calculateTip, fahrenheitToCelsius, celsiusToFahrenheit, add } = require('../src/math')
 
 test('Should convert 32 F to 0 C', () => {
     const c = fahrenheitToCelsius(32)
@@ -26,6 +26,26 @@ test('Should calculate total with default tip', () => {
     expect(total).toBe(12.5)
 })
 
+// test('Async test demo', (done) => {
+//     setTimeout(() => {
+//         expect(1).toBe(2)
+//         done()
+//     }, 2000)
+// })
+
+// * Tr hợp test cho promise
+test('Should add two numbers', (done) => {
+    add(2, 3).then(sum => {
+        expect(sum).toBe(5)
+        done()
+    })
+})
+
+// * Tr hợp test cho async / await (vì async luôn trả về promise nên jest tự biết đợi, ko cần done)
+test('Should add two numbers async/await', async () => {
+    const sum = await add(2, 5)
+    expect(sum).toBe(7)
+})
 
 // * Setup test case thứ 1, trong func mà throw error thì case đó fail
 // test('Hello world!', () => {
