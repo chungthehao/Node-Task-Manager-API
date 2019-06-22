@@ -106,3 +106,35 @@ test('Should not delete account for unauthenticated user', async () => {
         .send()
         .expect(401)
 })
+
+test('Should upload avatar image', async () => {
+    await request(app)
+        .post('/users/me/avatar')
+        .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
+        .attach('avatar', 'tests/fixtures/profile-pic.jpg')
+        .expect(200)
+
+    // - Check coi trong db đã save data nào đó kiểu Buffer trong field 'avatar' chưa
+    const user = await User.findById(userOneId)
+    expect(user.avatar).toEqual(expect.any(Buffer))
+})
+
+test('Should update valid user fields', async () => {
+    const response = await request(app)
+        .patch('/users/me')
+        .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
+        .send({ name: 'Chung The Hao' })
+        .expect(200)
+
+    // - Check coi trong db đã save những thay đổi
+    const user = await User.findById(userOneId)
+    expect(user.name).toBe('Chung The Hao')
+})
+
+test('Should not update invalid user fields', async () => {
+    await request(app)
+        .patch('/users/me')
+        .set('Authorization', `Bearer ${userOne.tokens[0].token}`)
+        .send({ location: 'Tao lao, lam gi co field nay!' })
+        expect(400)
+})
